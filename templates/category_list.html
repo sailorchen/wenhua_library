@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}分类管理{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<div class="search">
+    <form method="GET">
+        <div class="form-inline row">
+          <input type="text" class="form-control" placeholder="请输入分类名称" maxlength="50" name="search_keys"/>
+          <button class="btn btn-primary">搜 索</button>
+        </div>
+    </form>
+</div>
+<div class="search_content">
+    <a class="btn btn-primary" href={% url "add_category"%}>新增分类</a>
+<div class="panel panel-default">
+  <div class="panel-heading">图书类别信息</div>
+  <table class="table">
+    <th>编号</th>
+    <th>分类名称</th>
+    <th>操作</th>
+      {%if category_list%}
+        {% for row in category_list %}
+      <tr>
+          <td>
+                    {{ row.bc_id }}
+          </td>
+           <td>
+                    {{ row.bc_info }}
+          </td>
+          <td>
+              <a href={% url "alter_category" row.bc_id%}>修改</a>
+              <a href={% url "del_category" row.bc_id%}>删除</a>
+          </td>
+      </tr>
+      {% endfor %}
+{% else %}
+<p style="margin-left:30px;">暂无图书分类</p>
+{%endif%}
+  </table>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}图书详情{% endblock %}
+{% block content %}
+{%if book_detail %}
+<div>
+    <div class="panel panel-default">
+  <div class="panel-heading">图书详情</div>
+  <table class="table">
+      {% for row in book_detail%}
+      <tr><td>图书编号:{{row.bi_number}}</td></tr>
+      <tr><td>图书名称:{{row.bi_name}}</td></tr>
+      <tr><td>出版社名称:{{row.bi_publish_name}}</td></tr>
+      <tr><td>图书价格:{{row.bi_price}}</td></tr>
+      <tr><td>作者:{{row.bi_author}}</td></tr>
+      <tr><td>类别:{{row.bi_category}}</td></tr>
+      <tr><td>SN号:{{row.bi_sn_number}}</td></tr>
+      <tr><td>图书状态:{{row.bi_status}}</td></tr>
+      <tr><td>书架编号:{{row.bi_caseid}}</td></tr>
+      <tr><td>当前是否在馆:{{row.bi_state}}</td></tr>
+      <tr><td>入馆时间:{{row.bi_time_created}}</td></tr>
+      <tr><td>出版日期:{{row.bi_publish_date}}</td></tr>
+      {%endfor%}
+
+  </table>
+</div>
+</div>
+{% else %}
+<p>暂无数据</p>
+{%endif%}
+{% endblock %}

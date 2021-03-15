@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}读者详情{% endblock %}
+{% block content %}
+{%if user_detail %}
+<div>
+    <div class="panel panel-default">
+  <div class="panel-heading">读者详情</div>
+  <table class="table">
+        <tr><td>学号:{{user_detail.s_no}}</td></tr>
+      <tr><td>姓名:{{user_detail.s_name}}</td></tr>
+      <tr><td>性别:{{user_detail.s_sex}}</td></tr>
+      <tr><td>院系:{{user_detail.s_xi}}</td></tr>
+      <tr><td>邮箱:{{user_detail.s_email}}</td></tr>
+      <tr><td>借书数量:{{user_detail.s_borrow_count}}</td></tr>
+      <tr><td>使用状态:{{user_detail.s_status}}</td></tr>
+      <tr><td>联系电话:{{user_detail.s_cell_phone}}</td></tr>
+      <tr><td>注册时间:{{user_detail.s_time_created}}</td></tr>
+  </table>
+</div>
+</div>
+{% else %}
+<p>暂无数据</p>
+{%endif%}
+{% endblock %}

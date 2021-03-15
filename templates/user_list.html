@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}读者管理{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<div class="search">
+    <form method="GET">
+        <div class="form-inline row">
+          <input type="text" class="form-control" placeholder="请输入姓名或学号查询" maxlength="50" name="search_keys"/>
+          <button class="btn btn-primary">搜 索</button>
+        </div>
+    </form>
+</div>
+<div class="search_content">
+<div class="panel panel-default">
+  <div class="panel-heading">读者基本信息</div>
+  <table class="table">
+    <th>姓名</th>
+    <th>学号</th>
+    <th>院系</th>
+    <th>注册邮箱</th>
+    <th>账号状态</th>
+    <th>操作</th>
+      {%if user_list%}
+        {% for row in user_list %}
+        <tr>
+            <td>
+                {{ row.s_name }}
+            </td>
+            <td>
+                {{ row.s_no }}
+            </td>
+            <td>
+                {{ row.s_xi }}
+            </td>
+            <td>
+                {{ row.s_email }}
+            </td>
+            <td>
+                {{ row.s_status }}
+            </td>
+            <td>
+                <a href={% url "user_detail" row.s_no %}>查看</a>
+                <a href={% url "reset_pwd" row.s_no %} onclick="reset_pwd()" id="reset_pwd">重置密码</a>
+                <a href={% url "account_normal" row.s_no %} onclick="open_account()" id="open_account">启用</a>
+                <a href={% url "account_unnormal" row.s_no %} onclick="close_account()" id="close_account">禁用</a>
+            </td>
+        </tr>
+        {% endfor %}
+{% else %}
+<p style="margin-left:30px;">暂无数据</p>
+{%endif%}
+  </table>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,3 @@
+*.pyc
+/home/__pycache
+/wenhua_library/__pycache

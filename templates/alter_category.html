@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}修改分类{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<div class="main">
+    <div class="containter">
+        <div class="row">
+            <div class="col-xs-4 cos-xs-offset-4">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <form method="POST" action="">
+                    {%csrf_token%}
+                        <label for="id_id">图书类别id:</label>
+                        <input type="text" value="{{ id}}" name="id" class="form-control" required_id="id_id" disabled="disabled">
+                        <label for="id_name">图书类别名称:</label>
+                        <input type="text" value=" {{ title }}" name="name" class="form-control" required_id="id_name">
+                    <input type="submit" value="确定" class="btn btn-primary pull-right">
+                </form>
+                  </div>
+                </div>
+            </div>
+        </div>
+        </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}修改图书{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<div class="main">
+    <div class="containter">
+        <div class="row">
+            <div class="col-xs-4 cos-xs-offset-4">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <form method="POST" action="">
+                    {%csrf_token%}
+                        <label for="id_id">图书编号:</label>
+                        <input type="text" value="{{ id}}" name="book_id" class="form-control" disabled="disabled">
+                        <label for="id_name">图书名称:</label>
+                        <input type="text" value=" {{ bi_name }}" name="book_name" class="form-control" required_id="id_book_name">
+                        <label for="id_name">出版社名称:</label>
+                        <input type="text" value=" {{ bi_publish_name }}" name="book_publish" class="form-control" required_id="id_book_publish">
+                        <label for="id_name">图书价格:</label>
+                        <input type="text" value=" {{ bi_price }}" name="book_price" class="form-control" required_id="id_book_price">
+                        <label for="id_name">作者:</label>
+                        <input type="text" value=" {{ bi_author }}" name="book_author" class="form-control" required_id="id_book_author">
+                        <label for="id_name">SN号:</label>
+                        <input type="text" value=" {{ bi_sn_number }}" name="book_sn" class="form-control" required_id="id_book_sn">
+<!--                        <label for="id_name">图书状态:</label>-->
+<!--                        <input type="text" value=" {{ bi_status }}" name="book_status" class="form-control" required_id="id_book_status">-->
+
+                        <label for="id_name">书架编号:</label>
+                        <input type="text" value=" {{ bi_caseid }}" name="book_work_id" class="form-control" required_id="id_book_work_id">
+                        <label for="id_name">当前是否在馆:</label>
+                        <select id="book_state" name="book_state">
+                            <option value="1">在馆</option>
+                            <option value="0">不在馆</option>
+                        </select>
+                        <label for="id_name">图书状态:</label>
+                        <select id="bi_status" name="bi_status">
+                            <option value="1">正常</option>
+                            <option value="2">损坏</option>
+                        </select>
+<!--                        <label for="id_name">当前是否在馆:</label>-->
+<!--                        <input type="text" value=" {{ title }}" name="book_state" class="form-control" required_id="id_book_state">-->
+                    <input type="submit" value="确定" class="btn btn-primary pull-right">
+                </form>
+                  </div>
+                </div>
+            </div>
+        </div>
+        </div>
+</div>
+<br>
+<br>
+<br>
+{% endblock %}
+

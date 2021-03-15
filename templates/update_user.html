@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改用户信息</title>
+</head>
+<body>
+<form method="POST" action="">
+    {%csrf_token%}
+    <input type="text" placeholder="所在院系" name="s_xi"><br>
+    <input type="text" placeholder="新密码" name="s_password"><br>
+    <input type="text" placeholder="确认密码" name="s_confirm_password"><br>
+    <input type="text" placeholder="邮箱" name="s_email"><br>
+    <input type="submit">
+</form>
+</body>
+</html>
