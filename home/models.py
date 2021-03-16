@@ -83,10 +83,12 @@ class book_info(models.Model):
 
 #图书借阅表记录
 class book_borrow_back(models.Model):
-    bb_number = models.CharField(max_length=10, verbose_name="图书编号", primary_key=True)
+    bb_number = models.CharField(max_length=20, verbose_name="图书编号")
     bb_people = models.CharField(max_length=20,verbose_name="借用人学号")
     bb_borrow_date = models.DateTimeField(verbose_name="借书日期")
     bb_back_date = models.DateTimeField(max_length=20,verbose_name="还书日期")
+    bb_state = models.IntegerField(default=1,verbose_name="借书状态:0-待借阅 1-正在借阅 2-已归还  3-续借")
+    bb_comment = models.CharField(max_length=200,verbose_name="备注")
 
     class Meta:
         verbose_name = "图书借阅管理"
