@@ -40,7 +40,7 @@
                 {{ row.bb_state }}
             </td>
             <td>
-                 {% if row.bb_state == '待借阅'%}
+                 {% if row.bb_state == '申请中'%}
                 <a href={%url "borrow_book" row.bb_number%} onclick="borrow_book()" id="borrow_book">确认借书</a>
                 {%elif row.bb_state == '借阅中' or row.bb_state == '续借'%}
                 <a href={% url "back_book" row.id %}>确认还书</a>

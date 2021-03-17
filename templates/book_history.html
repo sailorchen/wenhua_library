@@ -40,7 +40,7 @@
             </td>
             <td>
                 {% if row.frequency == 0 and row.bb_state == '借阅中' %}
-                <a href={% url "delay_book" row.bb_number %}>续借</a>
+                <a href={% url "delay_book" row.id %}>续借</a>
                 {%else%}
                 {%endif%}
             </td>

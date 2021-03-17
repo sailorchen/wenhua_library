@@ -212,8 +212,9 @@ def user_book_list(request):
                 l['bi_state'] = '不在馆'
             elif l.get('bi_state') ==1:
                 l['bi_state'] = '在馆'
-            #书是否可借
-            if l.get('bi_status') == '正常' and l.get('bi_state') =='在馆':
+            #书能借的条件1-正常 2-在馆 3-状态显示为0或2
+            status=models.book_borrow_back.objects.filter(Q(bb_number=l.get('bi_number'),bb_state=1)|Q(bb_number=l.get('bi_number'),bb_state=3)|Q(bb_number=l.get('bi_number'),bb_state=0)|Q(bb_number=l.get('bi_number'),bb_state=4))
+            if l.get('bi_status') == '正常' and l.get('bi_state') =='在馆' and not status:
                 l['borrow_status'] =1
             else:
                 l['borrow_status'] =0
@@ -221,13 +222,9 @@ def user_book_list(request):
 
 #读者申请借书
 def user_borrow(request,book_id):
-    context={}
     user_name = request.session["user_name"]
     end_date = datetime.datetime.now()+datetime.timedelta(days=10)
-    #第一步：先查询表里有没有待借、归还的这边书，有的话不再创建，没有则创建，原则上是看有没有在馆
-    status = models.book_borrow_back.objects.filter(Q(bb_people=user_name,bb_number=book_id,bb_state=0)|Q(bb_people=user_name,bb_number=book_id,bb_state=2))
-    if not status:
-        models.book_borrow_back.objects.create(bb_number=book_id,bb_people=user_name,bb_back_date=end_date)
+    models.book_borrow_back.objects.create(bb_number=book_id,bb_people=user_name,bb_back_date=end_date,bb_state=4)
     return redirect('user_book_list')
 
 #管理员审核借书
@@ -253,6 +250,8 @@ def borrow_list(request):
                 l['bb_state'] = '已归还'
             elif l.get('bb_state') == 3:
                 l['bb_state'] = '续借'
+            elif l.get('bb_state') == 4:
+                l['bb_state'] = '申请中'
             #只有待借阅的有确认借书
     return render(request, 'borrow_list.html', context)
 
@@ -273,6 +272,8 @@ def book_history(request):
                 l['bb_state'] = '已归还'
             elif l.get('bb_state') == 3:
                 l['bb_state'] = '续借'
+            elif l.get('bb_state') == 4:
+                l['bb_state'] = '申请中'
             book_name=models.book_info.objects.filter(bi_number=l.get('bb_number')).values('bi_name')[0]['bi_name']
             l['book_name']=book_name
     return render(request,'book_history.html',context)
@@ -280,17 +281,17 @@ def book_history(request):
 #读者申请续借
 def delay_book(request,book_id):
     #更改应还日期+10,续借次数为1，状态为续借
-    date=models.book_borrow_back.objects.filter(bb_number=book_id).values('bb_back_date')
+    date=models.book_borrow_back.objects.filter(id=book_id).values('bb_back_date')
     back_time =datetime.timedelta(days=10)+date[0]['bb_back_date']
-    models.book_borrow_back.objects.filter(bb_number=book_id).update(bb_back_date=back_time,frequency=1,bb_state=3)
+    models.book_borrow_back.objects.filter(id=book_id).update(bb_back_date=back_time,frequency=1,bb_state=3)
     return redirect('book_history')
 
 #管理员确认借书
 def borrow_book(request,book_id):
     #1.更改借书的状态为1
     #2.更改图书的状态为不在馆
-    models.book_borrow_back.objects.filter(id=book_id,bb_state=0).update(bb_state=1)
-    models.book_info.objects.filter(id=book_id).update(bi_state=0)
+    models.book_borrow_back.objects.filter(bb_number=book_id,bb_state=4).update(bb_state=1)
+    models.book_info.objects.filter(bi_number=book_id).update(bi_state=0)
     return redirect('borrow_list')
 
 #管理员确认还书
