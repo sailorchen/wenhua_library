@@ -14,8 +14,8 @@ def get_current_time():
 def index(request):
     context = {}
     context['current_time'] = get_current_time()
-    user_type = request.session["user_name"]
-    context['user_type'] = user_type
+    user_name = request.session["user_name"]
+    context['user_name'] = user_name
     return render(request,'index.html',context)
 
 #读者信息
@@ -48,7 +48,9 @@ def user_index(request):
     context = {}
     context['current_time'] = get_current_time()
     user_name = request.session["user_name"]
+    display_name = models.student_user.objects.filter(s_no=user_name).values('s_name')[0]['s_name']
     context['user_name'] = user_name
+    context['display_name'] = display_name
     return render(request,'user_index.html',context)
 
 #读者注册视图
@@ -131,6 +133,9 @@ def user_detail(request,s_no):
         user_detail = {}
     context={}
     context['user_detail']= user_detail
+    context['current_time'] = get_current_time()
+    count = models.book_borrow_back.objects.filter(bb_people=s_no).exclude(bb_state=2)
+    context['borrow_count']=len(count)
     if user_detail:
         if user_detail.get('s_status') == 1:
             user_detail['s_status'] = '正常'
@@ -212,9 +217,11 @@ def user_book_list(request):
                 l['bi_state'] = '不在馆'
             elif l.get('bi_state') ==1:
                 l['bi_state'] = '在馆'
-            #书能借的条件1-正常 2-在馆 3-状态显示为0或2
+            #书能借的条件1-正常 2-在馆 3-状态显示为0或2 4-借书数量不超过5
+            user_name = request.session["user_name"]
+            count = models.book_borrow_back.objects.filter(bb_people=user_name).exclude(bb_state=2)
             status=models.book_borrow_back.objects.filter(Q(bb_number=l.get('bi_number'),bb_state=1)|Q(bb_number=l.get('bi_number'),bb_state=3)|Q(bb_number=l.get('bi_number'),bb_state=0)|Q(bb_number=l.get('bi_number'),bb_state=4))
-            if l.get('bi_status') == '正常' and l.get('bi_state') =='在馆' and not status:
+            if l.get('bi_status') == '正常' and l.get('bi_state') =='在馆' and not status and len(count)<5:
                 l['borrow_status'] =1
             else:
                 l['borrow_status'] =0
