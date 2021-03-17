@@ -13,3 +13,8 @@ function close_account()
 var obj = document.getElementById("close_account");
 alert("账号已禁止使用");
 }
+function borrow_book()
+{
+var obj = document.getElementById("borrow_book");
+alert("图书申请成功，请尽快取书，并于10日内归还");
+}

@@ -3,19 +3,53 @@ from django.http import HttpResponse,JsonResponse
 from django import forms
 from home import forms,models
 import time
+import datetime
 from django.db.models import Q
 # Create your views here.
 
 def get_current_time():
     return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
 
-#首页视图
+#首页管理员视图
 def index(request):
     context = {}
     context['current_time'] = get_current_time()
     user_type = request.session["user_name"]
     context['user_type'] = user_type
     return render(request,'index.html',context)
+
+#读者信息
+def user_info(request):
+    context = {}
+    context['current_time'] = get_current_time()
+    user_name = request.session["user_name"]
+    user_info = models.student_user.objects.filter(s_no=user_name).values('s_name','s_sex','s_xi','s_time_created','s_no','s_email','s_borrow_count','s_cell_phone')
+    user_display = user_info[0]['s_name']
+    s_cell_phone = user_info[0]['s_cell_phone']
+    s_email = user_info[0]['s_email']
+    s_xi = user_info[0]['s_xi']
+    s_time_created = user_info[0]['s_time_created']
+    if request.method == 'POST':
+        xi = request.POST.get("xi")
+        email = request.POST.get("email")
+        mobile = request.POST.get("mobile")
+        models.student_user.objects.filter(s_no=user_name).update(s_xi=xi,s_email=email,s_cell_phone=mobile)
+        return redirect('user_index')
+    context['user_name'] = user_name
+    context['user_display'] = user_display
+    context['mobile'] = s_cell_phone
+    context['email'] = s_email
+    context['xi'] = s_xi
+    context['register_time'] = s_time_created
+    return render(request, 'user_info.html', context)
+
+#首页读者视图
+def user_index(request):
+    context = {}
+    context['current_time'] = get_current_time()
+    user_name = request.session["user_name"]
+    context['user_name'] = user_name
+    return render(request,'user_index.html',context)
 
 #读者注册视图
 def register(request):
@@ -55,14 +89,7 @@ def login(request):
         if login_form.is_valid():
             request.session['user_type']= 1
             request.session['user_name']= login_form.cleaned_data['username']
-            return redirect('index.html')
-            # username = login_form.cleaned_data['username']
-            # pwd = login_form.cleaned_data['pwd']
-            # s1 = models.student_user.objects.filter(s_no=username,s_pwd=pwd)
-            # if s1:
-            #     return redirect('index.html')
-        # else:
-        #     login_form.add_error(None,'用户名或密码错误')
+            return redirect('user_index.html')
     else:
         login_form = forms.UserLoginForm()
     context = {}
@@ -134,6 +161,37 @@ def account_unnormal(request,s_no):
 def book_list(request):
     key = request.GET.get("search_keys")
     if key:
+        book_list = models.book_info.objects.values('bi_number', 'bi_name', 'bi_publish_name', 'bi_price', 'bi_author',
+                                                    'bi_publish_date', 'bi_category', 'bi_sn_number', 'bi_status',
+                                                    'bi_state').filter(
+            Q(bi_number=key) | Q(bi_name=key))
+        # borrow_list = models.book_borrow_back.objects.values('bb_number', 'bb_people', 'bb_borrow_date', 'bb_back_date', 'bb_comment','bb_state').filter(Q(bb_number=key) | Q(bb_people=key))
+    else:
+        try:
+            book_list = models.book_info.objects.values('bi_number', 'bi_name', 'bi_publish_name', 'bi_price', 'bi_author','bi_publish_date','bi_category','bi_sn_number','bi_status','bi_state')
+
+            # borrow_list = models.book_borrow_back.objects.values('bb_number', 'bb_people', 'bb_borrow_date', 'bb_back_date', 'bb_comment','bb_state')
+        except Exception as e:
+            borrow_list = {}
+    context = {}
+    context['current_time'] = get_current_time()
+    context['book_list'] = book_list
+    if book_list:
+        for l in book_list:
+            if l.get('bi_status') == 1:
+                l['bi_status'] = '正常'
+            elif l.get("bi_status") == 2:
+                l['bi_status'] = '已损坏'
+            if l.get('bi_state') == 0:
+                l['bi_state'] = '不在馆'
+            elif l.get('bi_state') ==1:
+                l['bi_state'] = '在馆'
+    return render(request, 'book_list.html', context)
+
+#读者借书列表视图
+def user_book_list(request):
+    key = request.GET.get("search_keys")
+    if key:
         book_list = models.book_info.objects.values('bi_number', 'bi_name', 'bi_publish_name', 'bi_price', 'bi_author','bi_publish_date','bi_category','bi_sn_number','bi_status','bi_state').filter(
                 Q(bi_number=key) | Q(bi_name=key))
     else:
@@ -154,7 +212,95 @@ def book_list(request):
                 l['bi_state'] = '不在馆'
             elif l.get('bi_state') ==1:
                 l['bi_state'] = '在馆'
-    return render(request, 'book_list.html', context)
+            #书是否可借
+            if l.get('bi_status') == '正常' and l.get('bi_state') =='在馆':
+                l['borrow_status'] =1
+            else:
+                l['borrow_status'] =0
+    return render(request, 'user_book_list.html', context)
+
+#读者申请借书
+def user_borrow(request,book_id):
+    context={}
+    user_name = request.session["user_name"]
+    end_date = datetime.datetime.now()+datetime.timedelta(days=10)
+    #第一步：先查询表里有没有待借、归还的这边书，有的话不再创建，没有则创建，原则上是看有没有在馆
+    status = models.book_borrow_back.objects.filter(Q(bb_people=user_name,bb_number=book_id,bb_state=0)|Q(bb_people=user_name,bb_number=book_id,bb_state=2))
+    if not status:
+        models.book_borrow_back.objects.create(bb_number=book_id,bb_people=user_name,bb_back_date=end_date)
+    return redirect('user_book_list')
+
+#管理员审核借书
+def borrow_list(request):
+    key = request.GET.get("search_keys")
+    if key:
+        borrow_list = models.book_borrow_back.objects.values('id','bb_number', 'bb_people', 'bb_borrow_date', 'bb_back_date', 'bb_comment','bb_state').filter(Q(bb_number=key) | Q(bb_people=key))
+    else:
+        try:
+            borrow_list = models.book_borrow_back.objects.values('id','bb_number', 'bb_people', 'bb_borrow_date', 'bb_back_date', 'bb_comment','bb_state')
+        except Exception as e:
+            borrow_list = {}
+    context = {}
+    context['current_time'] = get_current_time()
+    context['borrow_list'] = borrow_list
+    if borrow_list:
+        for l in borrow_list:
+            if l.get('bb_state') == 0:
+                l['bb_state'] = '待借阅'
+            elif l.get("bb_state") == 1:
+                l['bb_state'] = '借阅中'
+            elif l.get('bb_state') == 2:
+                l['bb_state'] = '已归还'
+            elif l.get('bb_state') == 3:
+                l['bb_state'] = '续借'
+            #只有待借阅的有确认借书
+    return render(request, 'borrow_list.html', context)
+
+#读者借阅历史
+def book_history(request):
+    context = {}
+    context['current_time'] = get_current_time()
+    user_name = request.session["user_name"]
+    history=models.book_borrow_back.objects.filter(bb_people=user_name).values('id','bb_number','bb_borrow_date','bb_back_date','bb_comment','bb_state','frequency')
+    context['history']=history
+    if history:
+        for l in history:
+            if l.get('bb_state') == 0:
+                l['bb_state'] = '待借阅'
+            elif l.get("bb_state") == 1:
+                l['bb_state'] = '借阅中'
+            elif l.get('bb_state') == 2:
+                l['bb_state'] = '已归还'
+            elif l.get('bb_state') == 3:
+                l['bb_state'] = '续借'
+            book_name=models.book_info.objects.filter(bi_number=l.get('bb_number')).values('bi_name')[0]['bi_name']
+            l['book_name']=book_name
+    return render(request,'book_history.html',context)
+
+#读者申请续借
+def delay_book(request,book_id):
+    #更改应还日期+10,续借次数为1，状态为续借
+    date=models.book_borrow_back.objects.filter(bb_number=book_id).values('bb_back_date')
+    back_time =datetime.timedelta(days=10)+date[0]['bb_back_date']
+    models.book_borrow_back.objects.filter(bb_number=book_id).update(bb_back_date=back_time,frequency=1,bb_state=3)
+    return redirect('book_history')
+
+#管理员确认借书
+def borrow_book(request,book_id):
+    #1.更改借书的状态为1
+    #2.更改图书的状态为不在馆
+    models.book_borrow_back.objects.filter(id=book_id,bb_state=0).update(bb_state=1)
+    models.book_info.objects.filter(id=book_id).update(bi_state=0)
+    return redirect('borrow_list')
+
+#管理员确认还书
+def back_book(request,borrow_id):
+    # 1.更改借书的状态为2
+    # 2.更改图书的状态为在馆
+    models.book_borrow_back.objects.filter(id=borrow_id).update(bb_state=2)
+    book_id = models.book_borrow_back.objects.filter(id=borrow_id).values('bb_number')[0]['bb_number']
+    models.book_info.objects.filter(bi_number=book_id).update(bi_state=1)
+    return redirect('borrow_list')
 
 #新增图书
 def add_book(request):

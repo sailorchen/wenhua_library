@@ -16,6 +16,7 @@ class UserLoginForm(forms.Form):
             self.cleaned_data['user'] = username
         return self.cleaned_data
 
+
 #管理员登录表单验证
 class AdminLoginForm(forms.Form):
     username = forms.CharField(min_length=2,label="用户名",max_length=20,widget=forms.TextInput(attrs={'class':'form-control','placeholder':'工作号'}))

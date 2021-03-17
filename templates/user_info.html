@@ -1,0 +1,42 @@
+{% extends 'user_base.html' %}
+{% block title %}资料修改{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<div class="main">
+    <div class="containter">
+        <div class="row">
+            <div class="col-xs-4 cos-xs-offset-4">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <form method="POST" action="">
+                    {%csrf_token%}
+                        <label for="id_id">学号:</label>
+                        <input type="text" value="{{ user_name }}" name="username" class="form-control" disabled="disabled">
+                        <label for="id_name">姓名:</label>
+                        <input type="text" value=" {{ user_display }}" name="display_name" class="form-control" required_id="id_book_name" disabled="disabled">
+                        <label for="id_name">借书数量:</label>
+                        <input type="text" value="0" name="book_publish" class="form-control" required_id="id_book_publish" disabled="disabled">
+                        <label for="id_name">院系:</label>
+                        <input type="text" value=" {{ xi }}" name="xi" class="form-control" required_id="id_book_price">
+                        <label for="id_name">邮箱:</label>
+                        <input type="text" value=" {{ email }}" name="email" class="form-control" required_id="id_book_author">
+                        <label for="id_name">联系电话:</label>
+                        <input type="text" value=" {{ mobile }}" name="mobile" class="form-control" required_id="id_book_sn">
+                        <label for="id_name">注册时间:</label>
+                        <input type="text" value=" {{ register_time }}" name="regirster" class="form-control" required_id="id_book_work_id" disabled="disabled">
+                        <label for="id_name">性别:</label>
+                        <select id="sex" name="sex">
+                            <option value="0">男</option>
+                            <option value="1">女</option>
+                        </select>
+                    <input type="submit" value="修改" class="btn btn-primary pull-right">
+                </form>
+                  </div>
+        </div>
+        </div>
+</div>
+<br>
+<br>
+<br>
+{% endblock %}
+

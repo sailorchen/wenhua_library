@@ -17,14 +17,14 @@
     <span style="float:right;margin-right:20px;color:white">当前时间:{{ current_time }}</span>
     <div class="menu">
 <ul>
-            <li><a href="{% url 'index'%}">首页</a></li>
+            <li><a href="{% url 'user_index'%}">首页</a></li>
             {% block tag %}
             {% endblock %}
-            <li><a href="{% url 'user_list'%}">读者管理</a></li>
-            <li><a href="{% url 'book_list'%}">图书管理</a></li>
-            <li><a href="{% url 'category_list'%}">图书分类</a></li>
-            <li><a href="{% url 'borrow_list'%}">借还管理</a></li>
-            <li><a href="{% url 'notice_list'%}">公告管理</a></li>
+            <li><a href="{% url 'user_info'%}">资料修改</a></li>
+            <li><a href="{% url 'user_book_list'%}">图书查看</a></li>
+            <li><a href="{% url 'book_history'%}">我的借阅</a></li>
+<!--            <li><a href="{% url 'category_list'%}">借还管理</a></li>-->
+<!--            <li><a href="{% url 'notice_list'%}">公告管理</a></li>-->
             <li><a href="{% url 'login'%}">退出</a></li>
         </ul>
     </div>

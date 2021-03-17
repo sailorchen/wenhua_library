@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     url(r'^index', views.index, name='index'),
+    url(r'^user_index', views.user_index, name='user_index'),
+    url(r'^user_info', views.user_info, name='user_info'),
 
     url(r'^login', views.login, name='login'),
     url(r'^admin_login', views.admin_login, name='admin_login'),
@@ -18,8 +20,15 @@ urlpatterns = [
     url(r'^update_user', views.update_user, name='update_user'),
 
     url(r'^book_list', views.book_list, name='book_list'),
+    url(r'^book_history', views.book_history, name='book_history'),
+    url(r'^borrow_list', views.borrow_list, name='borrow_list'),
+    url(r'^user_book_list', views.user_book_list, name='user_book_list'),
+    url(r'^user_borrow/(?P<book_id>\d+)/$', views.user_borrow, name='user_borrow'),
     url(r'^add_book', views.add_book, name='add_book'),
     url(r'^book_detail/(?P<binumber>\d+)/$', views.book_detail, name='book_detail'),
+    url(r'^borrow_book/(?P<book_id>\d+)/$', views.borrow_book, name='borrow_book'),
+    url(r'^delay_book/(?P<book_id>\d+)/$', views.delay_book, name='delay_book'),
+    url(r'^back_book/(?P<borrow_id>\d+)/$', views.back_book, name='back_book'),
     url(r'^modify_book/(?P<binumber>\d+)/$', views.modify_book, name='modify_book'),
 
     url(r'^category_list', views.category_list, name='category_list'),

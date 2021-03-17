@@ -1,0 +1,68 @@
+{% extends 'user_base.html' %}
+{% block title %}图书查看{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js">
+    function borrow_book()
+{
+var obj = document.getElementById("borrow_book");
+alert("图书申请成功，请尽快取书，并于10日内归还");
+}
+</script>
+<div class="search">
+    <form method="GET">
+        <div class="form-inline row">
+          <input type="text" class="form-control" placeholder="请输入书名或图书编号" maxlength="50" name="search_keys"/>
+          <button class="btn btn-primary">搜 索</button>
+        </div>
+    </form>
+</div>
+
+<div class="search_content">
+<div class="panel panel-default">
+  <div class="panel-heading">图书基本信息</div>
+
+  <table class="table">
+    <th>图书编号</th>
+    <th>SN号</th>
+    <th>图书名称</th>
+    <th>出版社</th>
+    <th>是否在馆</th>
+    <th>是否损坏</th>
+    <th>操作</th>
+      {%if book_list%}
+        {% for row in book_list %}
+        <tr>
+            <td>
+                {{ row.bi_number }}
+            </td>
+            <td>
+                {{ row.bi_sn_number }}
+            </td>
+            <td>
+                <a href={%url 'book_detail' row.bi_number%}>{{ row.bi_name }}</a>
+            </td>
+            <td>
+                {{ row.bi_publish_name }}
+            </td>
+            <td>
+                {{ row.bi_state }}
+            </td>
+            <td>
+                {{ row.bi_status }}
+            </td>
+            <td>
+                {% if row.borrow_status %}
+                <a href={%url "user_borrow" row.bi_number%} onclick="borrow_book()" id="borrow_book">申请借书</a>
+                {%else%}
+                <a style="pointer-events: none;color:gray">申请借书</a>
+                {% endif%}
+            </td>
+        </tr>
+        {% endfor %}
+{% else %}
+<p style="margin-left:30px;">暂无数据</p>
+{%endif%}
+  </table>
+</div>
+</div>
+{% endblock %}

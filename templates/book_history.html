@@ -1,0 +1,55 @@
+{% extends 'user_base.html' %}
+{% block title %}借阅记录{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<!--<div class="search">-->
+<!--    <form method="GET">-->
+<!--        <div class="form-inline row">-->
+<!--          <input type="text" class="form-control" placeholder="请输入姓名或学号查询" maxlength="50" name="search_keys"/>-->
+<!--          <button class="btn btn-primary">搜 索</button>-->
+<!--        </div>-->
+<!--    </form>-->
+<!--</div>-->
+<div class="search_content">
+<div class="panel panel-default">
+  <div class="panel-heading">借阅信息</div>
+  <table class="table">
+    <th>图书编号</th>
+    <th>书名</th>
+    <th>借书日期</th>
+    <th>应还日期</th>
+    <th>借书状态</th>
+    <th>操作</th>
+      {%if history%}
+        {% for row in history %}
+        <tr>
+            <td>
+                {{ row.bb_number }}
+            </td>
+            <td>
+                {{ row.book_name }}
+            </td>
+            <td>
+                {{ row.bb_borrow_date }}
+            </td>
+            <td>
+                {{ row.bb_back_date }}
+            </td>
+            <td>
+                {{ row.bb_state }}
+            </td>
+            <td>
+                {% if row.frequency == 0 and row.bb_state == '借阅中' %}
+                <a href={% url "delay_book" row.bb_number %}>续借</a>
+                {%else%}
+                {%endif%}
+            </td>
+        </tr>
+        {% endfor %}
+{% else %}
+<p style="margin-left:30px;">暂无数据</p>
+{%endif%}
+  </table>
+</div>
+</div>
+{% endblock %}
