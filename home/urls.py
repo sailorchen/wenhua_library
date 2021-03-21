@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^user_info', views.user_info, name='user_info'),
 
     url(r'^login', views.login, name='login'),
+    url(r'^logout', views.logout, name='logout'),
     url(r'^admin_login', views.admin_login, name='admin_login'),
     url(r'^register', views.register, name='register'),
 
@@ -37,6 +38,7 @@ urlpatterns = [
     url(r'^alter_category/(?P<id>\d+)/$', views.alter_category, name='alter_category'),
 
     url(r'^notice_list', views.notice_list, name='notice_list'),
+    url(r'^user_notice', views.user_notice, name='user_notice'),
     url(r'^notice_detail/(?P<id>\d+)/$', views.notice_detail, name='notice_detail'),
     url(r'^add_notice', views.add_notice, name='add_notice'),
     url(r'^delete_notice/(?P<id>\d+)/$', views.delete_notice, name='delete_notice'),

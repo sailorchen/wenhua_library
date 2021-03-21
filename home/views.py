@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from django import forms
 from home import forms,models
 import time
@@ -7,15 +7,32 @@ import datetime
 from django.db.models import Q
 # Create your views here.
 
+#获取当前时间
 def get_current_time():
     return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+
+#读者登录装饰器
+def check_login(func):
+    def wrapper(request,*args,**kwargs):
+        if not request.session.get("user_name"):
+            return redirect("/wenhua/login/")
+        return func(request,*args, **kwargs)
+    return wrapper
+
+#管理员登录装饰器
+def check_admin_login(func):
+    def wrapper(request,*args,**kwargs):
+        if not request.session.get("admin_name"):
+            return redirect("/wenhua/admin_login/")
+        return func(request,*args, **kwargs)
+    return wrapper
 
 #首页管理员视图
 def index(request):
     context = {}
     context['current_time'] = get_current_time()
-    user_name = request.session["user_name"]
-    context['user_name'] = user_name
+    user_name = request.session["admin_name"]
+    context['admin_name'] = user_name
     return render(request,'index.html',context)
 
 #读者信息
@@ -77,11 +94,13 @@ def admin_login(request):
     if request.method == 'POST':
         admin_login_form = forms.AdminLoginForm(request.POST)
         if admin_login_form.is_valid():
+            request.session['admin_name']= admin_login_form.cleaned_data['username']
             return redirect('index.html')
     else:
         admin_login_form = forms.AdminLoginForm()
     context = {}
     context['admin_login_form'] = admin_login_form
+
     return render(request,'admin_login.html',context)
 
 #读者登录视图
@@ -98,8 +117,15 @@ def login(request):
     context['login_form'] = login_form
     return render(request,'login.html',context)
 
+#退出登录
+def logout(request):
+    request.session.flush()
+    return redirect('login')
+
+#禁用用户
 def delete_user(request):
     return HttpResponse("删除用户")
+
 
 def update_user(request):
     return render(request,'update_user.html')
@@ -170,12 +196,10 @@ def book_list(request):
                                                     'bi_publish_date', 'bi_category', 'bi_sn_number', 'bi_status',
                                                     'bi_state').filter(
             Q(bi_number=key) | Q(bi_name=key))
-        # borrow_list = models.book_borrow_back.objects.values('bb_number', 'bb_people', 'bb_borrow_date', 'bb_back_date', 'bb_comment','bb_state').filter(Q(bb_number=key) | Q(bb_people=key))
     else:
         try:
             book_list = models.book_info.objects.values('bi_number', 'bi_name', 'bi_publish_name', 'bi_price', 'bi_author','bi_publish_date','bi_category','bi_sn_number','bi_status','bi_state')
 
-            # borrow_list = models.book_borrow_back.objects.values('bb_number', 'bb_people', 'bb_borrow_date', 'bb_back_date', 'bb_comment','bb_state')
         except Exception as e:
             borrow_list = {}
     context = {}
@@ -445,7 +469,7 @@ def alter_category(request,id):
     context['category_form']=category_form
     return render(request,'alter_category.html',context)
 
-#公告栏列表视图
+#管理员公告栏列表视图
 def notice_list(request):
     try:
         notice_list = models.notice_man.objects.values('nm_title','nm_time_created','id').order_by('-id')
@@ -455,6 +479,17 @@ def notice_list(request):
     context['current_time'] = get_current_time()
     context['notice_list'] = notice_list
     return render(request,'notice_list.html',context)
+
+#读者公告栏列表视图
+def user_notice(request):
+    try:
+        notice_list = models.notice_man.objects.values('nm_title','nm_time_created','id').order_by('-id')
+    except Exception as e:
+        notice_list = []
+    context = {}
+    context['current_time'] = get_current_time()
+    context['notice_list'] = notice_list
+    return render(request,'user_notice.html',context)
 
 #公告栏详细信息
 def notice_detail(request,id):

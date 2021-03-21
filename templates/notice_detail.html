@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}读者详情{% endblock %}
+{% block content %}
+{%if notice_detail %}
+<div>
+    {% for row in notice_detail %}
+              <h1>{{row.nm_title}}</h1>
+      <p class="page_content">{{row.nm_content}}</p>
+      {% endfor%}
+
+
+
+</div>
+{% else %}
+<p>暂无数据</p>
+{%endif%}
+{% endblock %}

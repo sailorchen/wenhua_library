@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}公告管理{% endblock %}
+{% block content %}
+{% if notice_list %}
+<div class="panel panel-default">
+  <div class="panel-heading">公告信息</div>
+  <table class="table">
+    <th>公告栏标题</th>
+    <th>发布日期</th>
+      {%if notice_list%}
+        {% for row in notice_list %}
+        <tr>
+            <td>
+               <a href={% url "notice_detail" row.id %}>{{ row.nm_title}}</a>
+            </td>
+            <td>
+                {{ row.nm_time_created }}
+            </td>
+        </tr>
+        {% endfor %}
+{% else %}
+<p style="margin-left:30px;">暂无数据</p>
+{%endif%}
+  </table>
+</div>
+
+{% else %}
+<div class="search">
+    <h3>暂无公告</h3>
+</div>
+{%endif%}
+{% endblock %}
