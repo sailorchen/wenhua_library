@@ -95,3 +95,17 @@ class book_borrow_back(models.Model):
         verbose_name = "图书借阅管理"
         verbose_name_plural = verbose_name
 
+
+#图书申请表
+class book_apply(models.Model):
+    ba_name = models.CharField(verbose_name="图书名称",max_length=50)
+    ba_author = models.CharField(verbose_name="图书作者",max_length=50)
+    ba_publish = models.CharField(verbose_name="图书出版社名称",max_length=50)
+    ba_user = models.ForeignKey(student_user,verbose_name="申请人id",on_delete=models.CASCADE)
+    ba_price = models.DecimalField(max_digits=10,decimal_places=1,verbose_name="图书价格")
+    ba_status = models.IntegerField(default=0,verbose_name="处理状态:0-待处理 1-采购中 2-已到馆 3-驳回采购")
+
+    class Meta:
+        verbose_name = "图书预约管理"
+        verbose_name_plural = verbose_name
+

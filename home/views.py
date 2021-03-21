@@ -5,6 +5,7 @@ from home import forms,models
 import time
 import datetime
 from django.db.models import Q
+from django.core.mail import send_mail
 # Create your views here.
 
 #获取当前时间
@@ -415,6 +416,55 @@ def modify_book(request,binumber):
         category_form = forms.AlterBookForm()
     context['category_form']=category_form
     return render(request,'alter_book.html',context)
+
+#催还书
+def send_email(request):
+    send_mail('图书催还通知', '您借书已经超过日期了，请尽快归还到管理员出，谢谢配合.', '857893632@qq.com',
+              ['2602452893@qq.com'], fail_silently=False)
+    return redirect('borrow_list')
+
+#通知用户图书到馆
+def notify_user(request):
+    send_mail('图书到馆通知', '您申请的图书已经到馆，请上图书管理系统进行预约', '857893632@qq.com',
+              ['2602452893@qq.com'], fail_silently=False)
+    return redirect('purchase')
+
+#驳回采购
+def refuse_user(request):
+    send_mail('图书拒绝采购通知', '您申请的图书暂时没有采购要求，请耐心等待或者预约其他图书', '857893632@qq.com',
+              ['2602452893@qq.com'], fail_silently=False)
+    return redirect('purchase')
+
+#修改图书到馆状态
+def alter_apply_status(request,id):
+    context = {}
+    context['current_time'] = get_current_time()
+    detail = models.book_apply.objects.filter(id=id).values("ba_name","ba_author","ba_publish","ba_user","ba_price","ba_status")
+    context['detail'] = detail
+    if request.method == 'POST':
+        status = request.POST.get("book_state")
+        models.book_apply.objects.filter(id=id).update(ba_status=status)
+        return redirect('purchase')
+    else:
+        return render(request,'alter_apply.html',context)
+
+#采购管理
+def purchase(request):
+    context = {}
+    context['current_time'] = get_current_time()
+    apply_list = models.book_apply.objects.values("id","ba_name","ba_author","ba_publish","ba_user","ba_price","ba_status")
+    context['apply_list'] = apply_list
+    if apply_list:
+        for l in apply_list:
+            if l.get("ba_status") == 0:
+                l["ba_status"] = "待处理"
+            elif l.get("ba_status") == 1:
+                l["ba_status"] = "采购中"
+            elif l.get("ba_status") == 2:
+                l["ba_status"] = "已到馆"
+            else:
+                l["ba_status"] = "驳回采购"
+    return render(request,'apply_list.html',context)
 
 
 #图书分类列表

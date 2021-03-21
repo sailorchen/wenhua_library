@@ -45,6 +45,7 @@
                 {%elif row.bb_state == '借阅中' or row.bb_state == '续借'%}
                 <a href={% url "back_book" row.id %}>确认还书</a>
                 {% endif%}
+                <a href={% url "send_email"%}>催还书</a>
             </td>
         </tr>
         {% endfor %}

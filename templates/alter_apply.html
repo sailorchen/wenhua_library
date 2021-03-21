@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}修改图书到馆状态{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/js/base.js"></script>
+<div class="main">
+    <div class="containter">
+        <div class="row">
+            <div class="col-xs-4 cos-xs-offset-4">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <form method="POST" action="">
+                    {%csrf_token%}
+                        {% for row in detail %}
+                        <label for="id_id">图书名称:</label>
+                        <input type="text" value="{{ row.ba_name }}" name="ba_name" class="form-control" disabled="disabled">
+                        <label for="id_name">图书作者:</label>
+                        <input type="text" value=" {{ row.ba_author }}" name="ba_author" class="form-control" disabled="disabled">
+                        <label for="id_name">出版社名称:</label>
+                        <input type="text" value=" {{ row.ba_publish }}" name="ba_publish" class="form-control" disabled="disabled">
+                        <label for="id_name">图书价格:</label>
+                        <input type="text" value=" {{ row.ba_price }}" name="ba_price" class="form-control" disabled="disabled">
+                        <label for="id_name">图书状态:</label>
+                        <select id="book_state" name="book_state">
+                            <option value="0">待处理</option>
+                            <option value="1">采购中</option>
+                            <option value="2">已到馆</option>
+                            <option value="3">驳回采购</option>
+                        </select>
+                        {% endfor%}
+                    <input type="submit" value="确定" class="btn btn-primary pull-right">
+                </form>
+                  </div>
+                </div>
+            </div>
+        </div>
+        </div>
+</div>
+<br>
+<br>
+<br>
+{% endblock %}
+

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from home.models import student_user,admin_user,book_info,book_category,notice_man,book_borrow_back
+from home.models import student_user,admin_user,book_info,book_category,notice_man,book_borrow_back,book_apply
 
 
 class student_user_admin(admin.ModelAdmin):
@@ -26,6 +26,9 @@ class notice_manage_admin(admin.ModelAdmin):
 class book_borrow_admin(admin.ModelAdmin):
     list_display = ('id','bb_number','bb_people','bb_state','bb_comment')
 
+class book_applay_admin(admin.ModelAdmin):
+    list_display = ('id','ba_name','ba_author','ba_publish','ba_price','ba_status')
+
 # 注册时，在第二个参数写上 admin model
 admin.site.register(student_user, student_user_admin)
 admin.site.register(admin_user,adminaa_user_admin)
@@ -33,3 +36,4 @@ admin.site.register(book_info,book_info_admin)
 admin.site.register(book_category,book_category_admin)
 admin.site.register(notice_man,notice_manage_admin)
 admin.site.register(book_borrow_back,book_borrow_admin)
+admin.site.register(book_apply,book_applay_admin)
