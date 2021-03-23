@@ -1,17 +1,17 @@
 from django.db import models
 
 # Create your models here.
-#学生用户表
+#读者用户表
 class student_user(models.Model):
-    s_no=models.CharField(max_length=18,verbose_name="学号",primary_key=True)
+    s_no=models.CharField(max_length=20,verbose_name="学号",primary_key=True)
     s_name=models.CharField(max_length=20,verbose_name="姓名")
     s_sex=models.IntegerField(default=0,verbose_name="性别 0男 1女")
-    s_xi=models.CharField(max_length=30,verbose_name="院系")
+    s_xi=models.CharField(max_length=30,verbose_name="读者院系")
     s_pwd=models.CharField(max_length=12,verbose_name="密码")
-    s_email=models.CharField(max_length=50,verbose_name="邮箱")
+    s_email=models.CharField(max_length=50,verbose_name="电子邮箱")
     s_borrow_count=models.IntegerField(default=0,verbose_name="借书数量,最多不能超过10")
-    s_status=models.IntegerField(default=1,verbose_name="状态 1正常 2禁用")
-    s_cell_phone=models.CharField(max_length=11,verbose_name="读者联系电话",blank=False)
+    s_status=models.IntegerField(default=1,verbose_name="账号状态 1正常 2禁用")
+    s_cell_phone=models.CharField(max_length=20,verbose_name="读者联系电话",blank=False)
     s_time_created=models.DateTimeField(auto_now=True,verbose_name="读者注册时间")
 
     def __str__(self):
@@ -24,11 +24,11 @@ class student_user(models.Model):
 
 #管理员用户表
 class admin_user(models.Model):
-    as_work_id=models.CharField(max_length=20,verbose_name="工作证号")
-    as_username=models.CharField(max_length=11,verbose_name="姓名")
+    as_work_id=models.CharField(max_length=20,verbose_name="员工编号")
+    as_username=models.CharField(max_length=20,verbose_name="员工姓名")
     as_password=models.CharField(max_length=20,verbose_name="密码")
-    as_cell_phone=models.CharField(max_length=11,verbose_name="联系电话")
-    as_status=models.IntegerField(default=1,verbose_name="状态 1正常 2禁用")
+    as_cell_phone=models.CharField(max_length=20,verbose_name="联系电话")
+    as_status=models.IntegerField(default=1,verbose_name="账号状态 1正常 2禁用")
 
     def __str__(self):
         return self.as_username
@@ -64,8 +64,8 @@ class book_category(models.Model):
 
 #图书信息表
 class book_info(models.Model):
-    bi_number = models.CharField(max_length=20,verbose_name="图书编号",primary_key=True)
-    bi_name = models.CharField(max_length=100,verbose_name='图书名称')
+    bi_number = models.CharField(max_length=20,verbose_name="图书ISBN",primary_key=True)
+    bi_name = models.CharField(max_length=50,verbose_name='图书名称')
     bi_publish_name = models.CharField(max_length=30,verbose_name='出版社名称')
     bi_price = models.DecimalField(max_digits=10,decimal_places=1,verbose_name="图书价格")
     bi_author = models.CharField(max_length=10,verbose_name="作者")
@@ -80,6 +80,14 @@ class book_info(models.Model):
     class Meta:
         verbose_name = "图书信息管理"
         verbose_name_plural = verbose_name
+
+#图书副本表
+class book_copy(models.Model):
+    bc_id = models.CharField(max_length=50,verbose_name="副本编号",primary_key=True)
+    bc_number = models.ForeignKey(book_info,on_delete=models.CASCADE,verbose_name="图书ISBN")
+    bc_caseid = models.CharField(max_length=20,verbose_name="存放位置",blank=False)
+    bc_state = models.IntegerField(default=1,verbose_name="是否借出 0不在馆 1在馆")
+
 
 #图书借阅表记录
 class book_borrow_back(models.Model):
