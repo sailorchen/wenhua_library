@@ -103,7 +103,8 @@ class book_apply(models.Model):
     ba_publish = models.CharField(verbose_name="图书出版社名称",max_length=50)
     ba_user = models.ForeignKey(student_user,verbose_name="申请人id",on_delete=models.CASCADE)
     ba_price = models.DecimalField(max_digits=10,decimal_places=1,verbose_name="图书价格")
-    ba_status = models.IntegerField(default=0,verbose_name="处理状态:0-待处理 1-采购中 2-已到馆 3-驳回采购")
+    ba_status = models.IntegerField(default=0,verbose_name="处理状态:0-待处理 1-采购中 2-已到馆 3-驳回采购 4-取消申请")
+    ba_time_created = models.DateTimeField(verbose_name="申请时间",auto_now=True)
 
     class Meta:
         verbose_name = "图书预约管理"

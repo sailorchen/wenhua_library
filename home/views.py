@@ -359,6 +359,27 @@ def add_book(request):
     context['add_book_form'] = add_book_form
     return render(request,'add_book.html',context)
 
+#新增申请
+def add_apply(request):
+    context = {}
+    context['current_time'] = get_current_time()
+    if request.method == 'POST':
+        apply_book_form = forms.ApplyBookForm(request.POST)
+        if apply_book_form.is_valid():
+            book_id = apply_book_form.data.get('book_id')
+            book_name = apply_book_form.data.get('book_name')
+            book_publish = apply_book_form.data.get('book_publish')
+            book_price = apply_book_form.data.get('book_price')
+            user=request.session.get("user_name")
+            user_id = models.student_user(models.student_user.objects.filter(s_no=user).values("s_no"))
+            models.book_apply.objects.create(ba_name=book_id, ba_author=book_name, ba_publish=book_publish,
+                                            ba_user=user_id, ba_price=book_price)
+            return redirect('user_apply_list')
+    else:
+        apply_book_form = forms.ApplyBookForm()
+    context['apply_book_form'] = apply_book_form
+    return render(request, 'add_apply.html', context)
+
 #图书详情
 def book_detail(request,binumber):
     book_detail = models.book_info.objects.values('bi_number', 'bi_name', 'bi_publish_name', 'bi_price', 'bi_author',
@@ -462,11 +483,36 @@ def purchase(request):
                 l["ba_status"] = "采购中"
             elif l.get("ba_status") == 2:
                 l["ba_status"] = "已到馆"
-            else:
+            elif l.get("ba_status") == 3:
                 l["ba_status"] = "驳回采购"
+            else:
+                l["ba_status"] = "已取消"
     return render(request,'apply_list.html',context)
 
-
+#图书申请
+def user_apply_list(request):
+    context = {}
+    context['current_time'] = get_current_time()
+    user= request.session.get("user_name")
+    user_apply_list = models.book_apply.objects.filter(ba_user=user).values("id","ba_name","ba_author","ba_publish","ba_price","ba_status","ba_time_created")
+    context['user_apply_list'] = user_apply_list
+    if user_apply_list:
+        for l in user_apply_list:
+            if l.get("ba_status") == 0:
+                l["ba_status"] = "待处理"
+            elif l.get("ba_status") == 1:
+                l["ba_status"] = "采购中"
+            elif l.get("ba_status") == 2:
+                l["ba_status"] = "已到馆"
+            elif l.get("ba_status") == 3:
+                l["ba_status"] = "驳回采购"
+            else:
+                l["ba_status"] = "已取消"
+    return render(request,'user_apply_list.html',context)
+#取消图书申请
+def cancel_apply(request,id):
+    models.book_apply.objects.filter(id=id).update(ba_status=4)
+    return redirect('user_apply_list')
 #图书分类列表
 def category_list(request):
     key = request.GET.get("search_keys")

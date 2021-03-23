@@ -1,0 +1,49 @@
+{% extends 'user_base.html' %}
+{% block title %}图书申请{% endblock %}
+{% block content %}
+<div class="search_content">
+    <a class="btn btn-primary" href={% url 'add_apply'%}>申请采购</a>
+<div class="panel panel-default">
+  <div class="panel-heading">我的申请记录</div>
+
+  <table class="table">
+    <th>图书名称</th>
+    <th>图书作者</th>
+    <th>出版社</th>
+    <th>图书价格</th>
+    <th>图书状态</th>
+    <th>申请时间</th>
+    <th>操作</th>
+      {%if user_apply_list%}
+        {% for row in user_apply_list %}
+        <tr>
+            <td>
+                {{ row.ba_name }}
+            </td>
+            <td>
+                {{ row.ba_author }}
+            </td>
+            <td>
+                {{ row.ba_publish }}
+            </td>
+            <td>
+                {{ row.ba_price }}
+            </td>
+            <td>
+                {{ row.ba_status }}
+            </td>
+            <td>
+                {{ row.ba_time_created }}
+            </td>
+            <td>
+                <a href={% url "cancel_apply" row.id%}>取消申请</a>
+            </td>
+        </tr>
+        {% endfor %}
+{% else %}
+<p style="margin-left:30px;">暂无申请数据</p>
+{%endif%}
+  </table>
+</div>
+</div>
+{% endblock %}

@@ -151,3 +151,10 @@ class AlterBookForm(forms.Form):
         if verify_work:
             raise forms.ValidationError("该书架已放置了图书，请选择其他的书架")
         return book_work_id
+
+#图书申请表单
+class ApplyBookForm(forms.Form):
+    book_id = forms.CharField(label="图书名称", min_length=2,max_length=20, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    book_name = forms.CharField(min_length=2, label="图书作者", max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    book_publish = forms.CharField(min_length=2, label="出版社名称", max_length=30, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    book_price = forms.FloatField( label="图书价格", widget=forms.TextInput(attrs={'class': 'form-control'}))

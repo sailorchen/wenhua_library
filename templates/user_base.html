@@ -23,7 +23,8 @@
             {% block tag %}
             {% endblock %}
             <li><a href="{% url 'user_info'%}">资料修改</a></li>
-            <li><a href="{% url 'user_book_list'%}">图书查看</a></li>
+            <li><a href="{% url 'user_book_list'%}">图书预览</a></li>
+                <li><a href="{% url 'user_apply_list'%}">图书申请</a></li>
             <li><a href="{% url 'book_history'%}">我的借阅</a></li>
             <li><a href="{% url 'user_notice'%}">公告</a></li>
             <li><a href="{% url 'login'%}">退出</a></li>
