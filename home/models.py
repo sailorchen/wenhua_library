@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 #读者用户表
 class student_user(models.Model):
-    s_no=models.CharField(max_length=20,verbose_name="学号",primary_key=True)
+    s_no=models.CharField(max_length=20,verbose_name="用户名",primary_key=True)
     s_name=models.CharField(max_length=20,verbose_name="姓名")
     s_sex=models.IntegerField(default=0,verbose_name="性别 0男 1女")
     s_xi=models.CharField(max_length=30,verbose_name="读者院系")
@@ -64,7 +64,7 @@ class book_category(models.Model):
 
 #图书信息表
 class book_info(models.Model):
-    bi_number = models.CharField(max_length=20,verbose_name="图书ISBN",primary_key=True)
+    bi_number = models.CharField(max_length=20,verbose_name="图书ISBN")
     bi_name = models.CharField(max_length=50,verbose_name='图书名称')
     bi_publish_name = models.CharField(max_length=30,verbose_name='出版社名称')
     bi_price = models.DecimalField(max_digits=10,decimal_places=1,verbose_name="图书价格")

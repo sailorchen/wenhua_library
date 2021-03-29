@@ -5,7 +5,7 @@
     <a class="btn btn-primary" href={% url 'add_apply'%}>申请采购</a>
 <div class="panel panel-default">
   <div class="panel-heading">我的申请记录</div>
-
+     {%if user_apply_list%}
   <table class="table">
     <th>图书名称</th>
     <th>图书作者</th>
@@ -14,7 +14,7 @@
     <th>图书状态</th>
     <th>申请时间</th>
     <th>操作</th>
-      {%if user_apply_list%}
+
         {% for row in user_apply_list %}
         <tr>
             <td>

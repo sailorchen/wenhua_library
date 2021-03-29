@@ -14,7 +14,7 @@
     <a class="btn btn-primary" href={% url 'add_book'%}>新增图书</a>
 <div class="panel panel-default">
   <div class="panel-heading">图书基本信息</div>
-
+      {%if book_list%}
   <table class="table">
     <th>图书编号</th>
     <th>SN号</th>
@@ -23,7 +23,7 @@
     <th>是否在馆</th>
     <th>是否损坏</th>
     <th>操作</th>
-      {%if book_list%}
+
         {% for row in book_list %}
         <tr>
             <td>
@@ -51,7 +51,7 @@
         </tr>
         {% endfor %}
 {% else %}
-<p style="margin-left:30px;">暂无数据</p>
+<p style="margin-left:30px;">暂无图书</p>
 {%endif%}
   </table>
 </div>

@@ -77,8 +77,14 @@ WSGI_APPLICATION = 'wenhua_library.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'wenhua_library',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'USER': 'root',
+        'PASSWORD': 'root'
     }
 }
 
@@ -98,10 +104,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.sessions.middleware.SessionMiddleware'
     }
+    # {
+    #     'NAME': 'django.contrib.sessions.middleware.SessionMiddleware'
+    # }
 ]
 
 STATICFILES_DIRS=(

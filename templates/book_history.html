@@ -13,6 +13,7 @@
 <div class="search_content">
 <div class="panel panel-default">
   <div class="panel-heading">借阅信息</div>
+          {%if history%}
   <table class="table">
     <th>图书编号</th>
     <th>书名</th>
@@ -20,7 +21,7 @@
     <th>应还日期</th>
     <th>借书状态</th>
     <th>操作</th>
-      {%if history%}
+
         {% for row in history %}
         <tr>
             <td>
@@ -47,7 +48,7 @@
         </tr>
         {% endfor %}
 {% else %}
-<p style="margin-left:30px;">暂无数据</p>
+<p style="margin-left:30px;">暂无借阅记录</p>
 {%endif%}
   </table>
 </div>

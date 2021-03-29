@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}公告管理{% endblock %}
 {% block content %}
-{% if notice_list %}
+
 <div class="panel panel-default">
   <div class="panel-heading">公告信息</div>
     <div class="panel-body">
         <a href={% url "add_notice"%} class="btn btn-primary">新增公告</a>
   </div>
+    {% if notice_list %}
   <table class="table">
     <th>公告栏标题</th>
     <th>发布日期</th>
